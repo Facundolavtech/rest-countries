@@ -1,9 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
 const GET_COUNTRIES = "GET_COUNTRIES";
 const GET_COUNTRIES_BY_REGION = "GET_COUNTRIES_BY_REGION";
+const SEARCH_COUNTRY = "SEARCH_COUNTRY";
 
 const initialState = {
-  countries: null,
+  countries: [],
+  countriesFilteredByRegion: [],
+  countriesFilteredBySearch: [],
 };
 
 export default function (state = initialState, action) {
@@ -17,8 +20,21 @@ export default function (state = initialState, action) {
     case GET_COUNTRIES_BY_REGION:
       return {
         ...state,
-        countries: countries.filter(
+        countriesFilteredByRegion: state.countries.filter(
           (country) => country.region === action.payload
+        ),
+      };
+    case SEARCH_COUNTRY:
+      let list = [];
+      if (state.countriesFilteredByRegion.length > 0) {
+        list = state.countriesFilteredByRegion;
+      } else {
+        list = state.countries;
+      }
+      return {
+        ...state,
+        countriesFilteredBySearch: list.filter((country) =>
+          country.name.toLowerCase().includes(action.payload.toLowerCase())
         ),
       };
     default:
@@ -35,4 +51,26 @@ export function getCountriesAction(countries) {
 const getCountriesFunction = (countries) => ({
   type: GET_COUNTRIES,
   payload: countries,
+});
+
+export function getCountriesByRegionAction(region) {
+  return async (dispatch) => {
+    dispatch(getCountriesByRegionFunction(region));
+  };
+}
+
+const getCountriesByRegionFunction = (region) => ({
+  type: GET_COUNTRIES_BY_REGION,
+  payload: region,
+});
+
+export function getCountriesBySearchAction(country) {
+  return async (dispatch) => {
+    dispatch(getCountriesBySearchFunction(country));
+  };
+}
+
+const getCountriesBySearchFunction = (country) => ({
+  type: SEARCH_COUNTRY,
+  payload: country,
 });

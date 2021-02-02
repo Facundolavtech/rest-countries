@@ -10,10 +10,20 @@ export default function (state = initialState, action) {
     case SET_DARKMODE:
       return {
         ...state,
-        darkmode: action.payload,
+        darkmode: !state.darkmode,
       };
 
     default:
       return state;
   }
 }
+
+export function setDarkModeAction() {
+  return async (dispatch) => {
+    dispatch(setDarkModeFunction());
+  };
+}
+
+const setDarkModeFunction = () => ({
+  type: SET_DARKMODE,
+});
